@@ -130,10 +130,34 @@
       );
 ---
 ### 2. 連線至 mongoDB 遠端資料庫
-   - mongoose.connect(DB)
+      - mongoose.connect(DB)
 ---
 
 ## C. 將 Node web server 部屬至 Render 主機
-### 1. .gitignore
-   - node_modules, *.env
-   - `git init`+`git add .`+`git status` 確認有 ignore
+### 1. 建立 .gitignore
+      `
+         *.env
+         node_modules
+         .DS_Store
+      `
+### 2. git init、git add .、git status
+   1. git status 確認 ignore 是否正確忽略
+   2. 建立新的 Git repo
+   3. git commit -m "建立環境"
+   4. 連線至遠端 Git repo
+### 3. 前往 Render 建立 Web Service
+   1. build and deploy from a Git repo
+   2. Build Command
+      `$npm install`
+   3. Start Command
+      `$node server.js`
+   4. package.json 的 "script" 新增屬性 "start"
+      `
+      "scripts": {
+         "start": "node server.js"
+      },
+      `
+   5. 加入環境變數
+      - add from .env
+      - 貼上 config.env
+      - 本地端 PORT 號不用加入
