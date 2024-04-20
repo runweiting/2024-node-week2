@@ -1,7 +1,8 @@
 const Post = require("../models/post");
-const headers = require("../service/corsHeader");
 const successHandle = require("../service/successHandle");
 const errorHandle = require("../service/errorHandle");
+
+const HttpControllers = require("../controllers/http");
 
 const routes = async (req, res) => {
   let body = "";
@@ -71,17 +72,9 @@ const routes = async (req, res) => {
       }
     });
   } else if (req.url == "/posts" && req.method == "OPTIONS") {
-    res.writeHead(200, headers);
-    res.end();
+    HttpControllers.cors(req, res);
   } else {
-    res.writeHead(404, headers);
-    res.write(
-      JSON.stringify({
-        status: "false",
-        message: "無此網站路由",
-      })
-    );
-    res.end();
+    HttpControllers.notFound(req, res);
   }
 };
 
