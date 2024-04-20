@@ -4,7 +4,7 @@ const PostsControllers = require("../controllers/posts");
 const routes = async (req, res) => {
   const { url, method } = req;
   // 提示訊息
-  console.log(method, url);
+  console.log(req.method, req.url);
   let body = "";
   req.on("data", (chunk) => {
     body += chunk;
