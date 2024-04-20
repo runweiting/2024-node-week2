@@ -1,13 +1,13 @@
 const Post = require("../models/post");
-const successHandle = require("../service/successHandle");
-const errorHandle = require("../service/errorHandle");
+const handleSuccess = require("../service/handleSuccess");
+const handleError = require("../service/handleError");
 
 const posts = {
   async getPosts({ req, res }) {
     // 先操控資料庫
     const post = await Post.find();
     // 再回傳資料
-    successHandle(res, post);
+    handleSuccess(res, post);
   },
   async createdPost({ body, req, res }) {
     try {
@@ -24,23 +24,23 @@ const posts = {
             console.log(err);
           });
         const post = await Post.find();
-        successHandle(res, post);
+        handleSuccess(res, post);
       } else {
-        errorHandle(res);
+        handleError(res);
       }
     } catch (error) {
-      errorHandle(res, error);
+      handleError(res, error);
     }
   },
   async deletePosts() {
     await Post.deleteMany({});
-    successHandle(res, null);
+    handleSuccess(res, null);
   },
   async deletePost({ req, res }) {
     const id = req.url.split("/").pop();
     await Post.findByIdAndDelete(id);
     const post = await Post.find();
-    successHandle(res, post);
+    handleSuccess(res, post);
   },
   async updatePost({ body, req, res }) {
     try {
@@ -58,12 +58,12 @@ const posts = {
             console.log(err);
           });
         const post = await Post.find();
-        successHandle(res, post);
+        handleSuccess(res, post);
       } else {
-        errorHandle(res);
+        handleError(res);
       }
     } catch (error) {
-      errorHandle(res, error);
+      handleError(res, error);
     }
   },
 };

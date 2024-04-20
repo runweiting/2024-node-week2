@@ -1,5 +1,5 @@
 const headers = require("./corsHeader");
-function successHandle(res, post) {
+function handleSuccess(res, post) {
   res.writeHead(200, headers);
   res.write(
     JSON.stringify({
@@ -10,4 +10,4 @@ function successHandle(res, post) {
   res.end();
 }
 
-module.exports = successHandle;
+module.exports = handleSuccess;
