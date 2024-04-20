@@ -1,3 +1,8 @@
+const Post = require("./models/post");
+const headers = require("./corsHeader");
+const successHandle = require("./successHandle");
+const errorHandle = require("./errorHandle");
+
 const routes = async (req, res) => {
   let body = "";
   req.on("data", (chunk) => {
@@ -13,7 +18,7 @@ const routes = async (req, res) => {
       try {
         const data = JSON.parse(body);
         if (data.content !== undefined) {
-          const newPost = await Post.create({
+          await Post.create({
             name: data.name,
             content: data.content,
           })
