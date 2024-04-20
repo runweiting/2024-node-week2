@@ -1,8 +1,5 @@
-const Post = require("../models/post");
-const successHandle = require("../service/successHandle");
-const errorHandle = require("../service/errorHandle");
-
 const HttpControllers = require("../controllers/http");
+const PostsControllers = require("../controllers/posts");
 
 const routes = async (req, res) => {
   let body = "";
@@ -10,10 +7,7 @@ const routes = async (req, res) => {
     body += chunk;
   });
   if (req.url == "/posts" && req.method == "GET") {
-    // 先操控資料庫邏輯
-    const post = await Post.find();
-    // 再回傳資料
-    successHandle(res, post);
+    PostsControllers.getPosts(req, res);
   } else if (req.url == "/posts" && req.method == "POST") {
     req.on("end", async () => {
       try {
