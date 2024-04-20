@@ -1,7 +1,7 @@
-const Post = require("./models/post");
-const headers = require("./corsHeader");
-const successHandle = require("./successHandle");
-const errorHandle = require("./errorHandle");
+const Post = require("../models/post");
+const headers = require("../service/corsHeader");
+const successHandle = require("../service/successHandle");
+const errorHandle = require("../service/errorHandle");
 
 const routes = async (req, res) => {
   let body = "";
