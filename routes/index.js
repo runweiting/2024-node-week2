@@ -2,70 +2,22 @@ const HttpControllers = require("../controllers/http");
 const PostsControllers = require("../controllers/posts");
 
 const routes = async (req, res) => {
+  const { url, method } = req;
   let body = "";
   req.on("data", (chunk) => {
     body += chunk;
   });
-  if (req.url == "/posts" && req.method == "GET") {
-    PostsControllers.getPosts(req, res);
-  } else if (req.url == "/posts" && req.method == "POST") {
-    req.on("end", async () => {
-      try {
-        const data = JSON.parse(body);
-        if (data.content !== undefined) {
-          await Post.create({
-            name: data.name,
-            content: data.content,
-          })
-            .then(() => {
-              console.log("資料更新成功");
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          const post = await Post.find();
-          successHandle(res, post);
-        } else {
-          errorHandle(res);
-        }
-      } catch (error) {
-        errorHandle(res, error);
-      }
-    });
-  } else if (req.url == "/posts" && req.method == "DELETE") {
-    await Post.deleteMany({});
-    successHandle(res, null);
-  } else if (req.url.startsWith("/posts/") && req.method == "DELETE") {
-    const id = req.url.split("/").pop();
-    await Post.findByIdAndDelete(id);
-    const post = await Post.find();
-    successHandle(res, post);
-  } else if (req.url.startsWith("/posts/") && req.method == "PATCH") {
-    req.on("end", async () => {
-      try {
-        const data = JSON.parse(body);
-        const id = req.url.split("/").pop();
-        if (data.content !== undefined) {
-          await Post.findByIdAndUpdate(id, {
-            name: data.name,
-            content: data.content,
-          })
-            .then(() => {
-              console.log("資料更新成功");
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          const post = await Post.find();
-          successHandle(res, post);
-        } else {
-          errorHandle(res);
-        }
-      } catch (error) {
-        errorHandle(res, error);
-      }
-    });
-  } else if (req.url == "/posts" && req.method == "OPTIONS") {
+  if (url == "/posts" && method == "GET") {
+    PostsControllers.getPosts({ req, res });
+  } else if (url == "/posts" && method == "POST") {
+    req.on("end", () => PostsControllers.createdPost({ body, req, res }));
+  } else if (url == "/posts" && method == "DELETE") {
+    PostsControllers.deletePosts();
+  } else if (url.startsWith("/posts/") && method == "DELETE") {
+    PostsControllers.deletePost({ req, res });
+  } else if (url.startsWith("/posts/") && method == "PATCH") {
+    req.on("end", () => PostsControllers.updatePost({ body, req, res }));
+  } else if (method == "OPTIONS") {
     HttpControllers.cors(req, res);
   } else {
     HttpControllers.notFound(req, res);
