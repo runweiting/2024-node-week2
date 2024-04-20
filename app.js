@@ -1,11 +1,10 @@
-const http = require("http");
 const Post = require("./models/post");
 const headers = require("./corsHeader");
 const successHandle = require("./successHandle");
 const errorHandle = require("./errorHandle");
 require("./connections");
 
-const requestListener = async (req, res) => {
+const app = async (req, res) => {
   let body = "";
   req.on("data", (chunk) => {
     body += chunk;
@@ -86,5 +85,5 @@ const requestListener = async (req, res) => {
     res.end();
   }
 };
-const server = http.createServer(requestListener);
-server.listen(process.env.PORT);
+
+module.exports = app;
