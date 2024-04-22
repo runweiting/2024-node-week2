@@ -42,22 +42,17 @@ const posts = {
     try {
       const data = JSON.parse(body);
       const id = req.url.split("/").pop();
-      if (data.content !== undefined) {
-        await Post.findByIdAndUpdate(id, {
-          name: data.name,
-          content: data.content,
-        })
-          .then(() => {
-            console.log("資料更新成功");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        const post = await Post.find();
-        handleSuccess(res, post);
-      } else {
-        handleError(res);
+      if (!data.name || !data.content) {
+        handleError(res, "姓名及內容為必填");
       }
+      await Post.findByIdAndUpdate(id, {
+        name: data.name,
+        content: data.content,
+        image: data.image,
+        likes: data.likes || 0,
+      });
+      const post = await Post.find();
+      handleSuccess(res, post);
     } catch (error) {
       handleError(res, error);
     }
