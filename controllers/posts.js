@@ -14,7 +14,8 @@ const posts = {
       const data = JSON.parse(body);
       // 檢查必填欄位
       if (!data.name || !data.content) {
-        handleError(res, "姓名及內容為必填");
+        // 拋出帶有錯誤消息的 Error 物件，Error 會向外層傳遞被 catch 捕捉
+        throw new Error("姓名及內容為必填");
       }
       await Post.create({
         name: data.name,
@@ -43,7 +44,7 @@ const posts = {
       const data = JSON.parse(body);
       const id = req.url.split("/").pop();
       if (!data.name || !data.content) {
-        handleError(res, "姓名及內容為必填");
+        throw new Error("姓名及內容為必填");
       }
       await Post.findByIdAndUpdate(id, {
         name: data.name,
