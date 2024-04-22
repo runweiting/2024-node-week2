@@ -32,7 +32,7 @@ const posts = {
       handleError(res, error);
     }
   },
-  async deletePosts() {
+  async deletePosts(res) {
     await Post.deleteMany({});
     handleSuccess(res, null);
   },
