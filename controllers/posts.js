@@ -14,7 +14,7 @@ const posts = {
       const data = JSON.parse(body);
       // 檢查必填欄位
       if (!data.name || !data.content) {
-        throw new Error("姓名及內容為必填");
+        handleError(res, "姓名及內容為必填");
       }
       await Post.create({
         name: data.name,
