@@ -12,22 +12,18 @@ const posts = {
   async createdPost({ body, req, res }) {
     try {
       const data = JSON.parse(body);
-      if (data.content !== undefined) {
-        await Post.create({
-          name: data.name,
-          content: data.content,
-        })
-          .then(() => {
-            console.log("資料更新成功");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        const post = await Post.find();
-        handleSuccess(res, post);
-      } else {
-        handleError(res);
+      // 檢查必填欄位
+      if (!data.name || !data.content) {
+        throw new Error("姓名及內容為必填");
       }
+      await Post.create({
+        name: data.name,
+        content: data.content,
+        image: data.image,
+        likes: data.likes || 0,
+      });
+      const post = await Post.find();
+      handleSuccess(res, post);
     } catch (error) {
       handleError(res, error);
     }
