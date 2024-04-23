@@ -29,11 +29,15 @@ const posts = {
     handleSuccess(res, "全部刪除成功", posts);
   },
   async deletePost({ req, res }) {
-    const id = req.url.split("/").pop();
-    const deletePost = await Post.findByIdAndDelete(id);
-    if (deletePost) {
-      handleSuccess(res, "刪除成功", deletePost);
-    } else {
+    try {
+      const id = req.url.split("/").pop();
+      const deletePost = await Post.findByIdAndDelete(id);
+      if (deletePost !== null) {
+        handleSuccess(res, "刪除成功", deletePost);
+      } else {
+        throw new Error("查無此 id");
+      }
+    } catch (err) {
       handleError(res, "查無此 id");
     }
   },
@@ -61,7 +65,7 @@ const posts = {
           runValidators: true,
         }
       );
-      if (updatePost) {
+      if (updatePost !== null) {
         handleSuccess(res, "更新成功", updatePost);
       } else {
         throw new Error("查無此 id");
