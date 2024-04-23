@@ -6,7 +6,7 @@ function handleError(res, error) {
     res.write(
       JSON.stringify({
         status: "false",
-        message: error.message || "An error occurred",
+        message: error.message,
       })
     );
     res.end();
