@@ -36,10 +36,10 @@ const posts = {
     try {
       const id = req.url.split("/").pop();
       const deletePost = await Post.findByIdAndDelete(id);
-      if (deletePost !== null) {
-        handleSuccess(res, deletePost);
-      } else {
+      if (deletePost == null) {
         throw new Error("查無此貼文");
+      } else {
+        handleSuccess(res, deletePost);
       }
     } catch (err) {
       handleError(res, err);
@@ -69,10 +69,10 @@ const posts = {
           runValidators: true,
         }
       );
-      if (updatePost !== null) {
-        handleSuccess(res, updatePost);
-      } else {
+      if (updatePost == null) {
         throw new Error("查無此貼文");
+      } else {
+        handleSuccess(res, updatePost);
       }
     } catch (error) {
       handleError(res, error);
