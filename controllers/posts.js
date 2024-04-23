@@ -19,7 +19,7 @@ const posts = {
       }
       await Post.create({
         name: data.name,
-        content: data.content,
+        content: data.content.trim(),
         image: data.image,
         likes: data.likes || 0,
       });
@@ -43,17 +43,27 @@ const posts = {
     try {
       const data = JSON.parse(body);
       const id = req.url.split("/").pop();
+      // 手動檢查必填欄位
       if (!data.name || !data.content) {
         throw new Error("姓名及內容為必填");
       }
-      await Post.findByIdAndUpdate(id, {
-        name: data.name,
-        content: data.content,
-        image: data.image,
-        likes: data.likes || 0,
-      });
-      const post = await Post.find();
-      handleSuccess(res, post);
+      // 更新資料庫並啟用驗證規則
+      const updatePost = await Post.findByIdAndUpdate(
+        id,
+        {
+          name: data.name,
+          content: data.content.trim(),
+          image: data.image,
+          likes: data.likes || 0,
+        },
+        {
+          // 返回更新後的資料
+          new: true,
+          // 啟用驗證規則
+          runValidators: true,
+        }
+      );
+      handleSuccess(res, updatePost);
     } catch (error) {
       handleError(res, error);
     }
