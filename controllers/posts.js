@@ -41,8 +41,8 @@ const posts = {
       } else {
         handleSuccess(res, deletePost);
       }
-    } catch (err) {
-      handleError(res, err);
+    } catch {
+      handleError(res, "查無此貼文");
     }
   },
   async updatePost({ body, req, res }) {
@@ -74,8 +74,8 @@ const posts = {
       } else {
         handleSuccess(res, updatePost);
       }
-    } catch (error) {
-      handleError(res, error);
+    } catch {
+      handleError(res, "查無此貼文");
     }
   },
 };
