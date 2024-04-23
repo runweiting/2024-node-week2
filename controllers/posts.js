@@ -1,20 +1,16 @@
 const Post = require("../models/post");
-const handleSuccess = require("../service/handleSuccess");
-const handleError = require("../service/handleError");
+const { handleSuccess, handleError } = require("../service/handler");
 
 const posts = {
-  async getPosts({ req, res }) {
-    // 先操控資料庫
-    const post = await Post.find().sort({ createdAt: -1 });
-    // 再回傳資料
-    handleSuccess(res, post);
+  async getPosts({ res }) {
+    const posts = await Post.find().sort({ createdAt: -1 });
+    handleSuccess(res, "查詢成功", posts);
   },
-  async createdPost({ body, req, res }) {
+  async createdPost({ body, res }) {
     try {
       const data = JSON.parse(body);
       // 手動檢查必填欄位
       if (!data.name || !data.content) {
-        // 拋出帶有錯誤消息的 Error 物件，Error 會向外層傳遞被 catch 捕捉
         throw new Error("姓名及內容為必填");
       }
       const newPost = await Post.create({
@@ -23,26 +19,22 @@ const posts = {
         image: data.image,
         likes: data.likes || 0,
       });
-      handleSuccess(res, newPost);
+      handleSuccess(res, "新增成功", newPost);
     } catch (error) {
-      handleError(res, error);
+      handleError(res, error.message);
     }
   },
   async deletePosts(res) {
-    await Post.deleteMany({});
-    handleSuccess(res, null);
+    const posts = await Post.deleteMany({});
+    handleSuccess(res, "全部刪除成功", posts);
   },
   async deletePost({ req, res }) {
-    try {
-      const id = req.url.split("/").pop();
-      const deletePost = await Post.findByIdAndDelete(id);
-      if (deletePost == null) {
-        throw new Error("查無此貼文");
-      } else {
-        handleSuccess(res, deletePost);
-      }
-    } catch {
-      handleError(res, "查無此貼文");
+    const id = req.url.split("/").pop();
+    const deletePost = await Post.findByIdAndDelete(id);
+    if (deletePost) {
+      handleSuccess(res, "刪除成功", deletePost);
+    } else {
+      handleError(res, "查無此 id");
     }
   },
   async updatePost({ body, req, res }) {
@@ -69,13 +61,13 @@ const posts = {
           runValidators: true,
         }
       );
-      if (updatePost == null) {
-        throw new Error("查無此貼文");
+      if (updatePost) {
+        handleSuccess(res, "更新成功", updatePost);
       } else {
-        handleSuccess(res, updatePost);
+        throw new Error("查無此 id");
       }
     } catch {
-      handleError(res, "查無此貼文");
+      handleError(res, "查無此 id");
     }
   },
 };
