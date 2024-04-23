@@ -35,14 +35,11 @@ const posts = {
   async deletePost({ req, res }) {
     try {
       const id = req.url.split("/").pop();
-      if (!id) {
-        throw new Error("查無此 id");
-      }
       const deletePost = await Post.findByIdAndDelete(id);
-      if (!deletePost) {
-        throw new Error("查無此貼文");
-      } else {
+      if (deletePost !== null) {
         handleSuccess(res, deletePost);
+      } else {
+        throw new Error("查無此貼文");
       }
     } catch (err) {
       handleError(res, err);
@@ -52,9 +49,6 @@ const posts = {
     try {
       const data = JSON.parse(body);
       const id = req.url.split("/").pop();
-      if (!id) {
-        throw new Error("查無此 id");
-      }
       // 手動檢查必填欄位
       if (!data.name || !data.content) {
         throw new Error("姓名及內容為必填");
@@ -75,10 +69,10 @@ const posts = {
           runValidators: true,
         }
       );
-      if (!updatePost) {
-        throw new Error("查無此貼文");
-      } else {
+      if (updatePost !== null) {
         handleSuccess(res, updatePost);
+      } else {
+        throw new Error("查無此貼文");
       }
     } catch (error) {
       handleError(res, error);
