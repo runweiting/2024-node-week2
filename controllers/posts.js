@@ -5,26 +5,25 @@ const handleError = require("../service/handleError");
 const posts = {
   async getPosts({ req, res }) {
     // 先操控資料庫
-    const post = await Post.find();
+    const post = await Post.find().sort({ createdAt: -1 });
     // 再回傳資料
     handleSuccess(res, post);
   },
   async createdPost({ body, req, res }) {
     try {
       const data = JSON.parse(body);
-      // 檢查必填欄位
+      // 手動檢查必填欄位
       if (!data.name || !data.content) {
         // 拋出帶有錯誤消息的 Error 物件，Error 會向外層傳遞被 catch 捕捉
         throw new Error("姓名及內容為必填");
       }
-      await Post.create({
+      const newPost = await Post.create({
         name: data.name,
         content: data.content.trim(),
         image: data.image,
         likes: data.likes || 0,
       });
-      const post = await Post.find();
-      handleSuccess(res, post);
+      handleSuccess(res, newPost);
     } catch (error) {
       handleError(res, error);
     }
@@ -34,15 +33,28 @@ const posts = {
     handleSuccess(res, null);
   },
   async deletePost({ req, res }) {
-    const id = req.url.split("/").pop();
-    await Post.findByIdAndDelete(id);
-    const post = await Post.find();
-    handleSuccess(res, post);
+    try {
+      const id = req.url.split("/").pop();
+      if (!id) {
+        throw new Error("查無此 id");
+      }
+      const deletePost = await Post.findByIdAndDelete(id);
+      if (!deletePost) {
+        throw new Error("查無此貼文");
+      } else {
+        handleSuccess(res, deletePost);
+      }
+    } catch (err) {
+      handleError(res, err);
+    }
   },
   async updatePost({ body, req, res }) {
     try {
       const data = JSON.parse(body);
       const id = req.url.split("/").pop();
+      if (!id) {
+        throw new Error("查無此 id");
+      }
       // 手動檢查必填欄位
       if (!data.name || !data.content) {
         throw new Error("姓名及內容為必填");
@@ -63,7 +75,11 @@ const posts = {
           runValidators: true,
         }
       );
-      handleSuccess(res, updatePost);
+      if (!updatePost) {
+        throw new Error("查無此貼文");
+      } else {
+        handleSuccess(res, updatePost);
+      }
     } catch (error) {
       handleError(res, error);
     }
