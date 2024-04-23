@@ -3,7 +3,6 @@ const headers = require("./corsHeader");
 function handleSuccess(res, message, post = null) {
   const data = {
     status: "success",
-    // 客製提示訊息
     message,
   };
   // 若有 post 則加入 data 回饋訊息
