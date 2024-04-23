@@ -10,11 +10,11 @@ const routes = async (req, res) => {
     body += chunk;
   });
   if (url == "/posts" && method == "GET") {
-    PostsControllers.getPosts({ req, res });
+    PostsControllers.getPosts(res);
   } else if (url == "/posts" && method == "POST") {
-    req.on("end", () => PostsControllers.createdPost({ body, req, res }));
+    req.on("end", () => PostsControllers.createdPost({ body, res }));
   } else if (url == "/posts" && method == "DELETE") {
-    PostsControllers.deletePosts();
+    PostsControllers.deletePosts(res);
   } else if (url.startsWith("/posts/") && method == "DELETE") {
     PostsControllers.deletePost({ req, res });
   } else if (url.startsWith("/posts/") && method == "PATCH") {

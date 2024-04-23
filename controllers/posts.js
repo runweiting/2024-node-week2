@@ -2,7 +2,7 @@ const Post = require("../models/post");
 const { handleSuccess, handleError } = require("../service/handler");
 
 const posts = {
-  async getPosts({ res }) {
+  async getPosts(res) {
     const posts = await Post.find().sort({ createdAt: -1 });
     handleSuccess(res, "查詢成功", posts);
   },
@@ -24,7 +24,7 @@ const posts = {
       handleError(res, error.message);
     }
   },
-  async deletePosts({ res }) {
+  async deletePosts(res) {
     const posts = await Post.deleteMany({});
     handleSuccess(res, "全部刪除成功", posts);
   },
