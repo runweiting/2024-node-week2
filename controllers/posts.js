@@ -70,8 +70,8 @@ const posts = {
       } else {
         throw new Error("查無此 id");
       }
-    } catch {
-      handleError(res, "查無此 id");
+    } catch (error) {
+      handleError(res, error.message);
     }
   },
 };
